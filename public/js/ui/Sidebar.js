@@ -34,26 +34,30 @@ class Sidebar {
    * */
   static initAuthLinks() {
     const btnRegister = document.querySelectorAll(".menu-item");
-    for (const btn of btnRegister) {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (btn.classList.contains("menu-item_login")) {
-          App.getModal("login").open();
-        } else if (btn.classList.contains("menu-item_register")) {
-          App.getModal("register").open();
-        } else if (btn.classList.contains("menu-item_logout")) {
-          User.logout((error, response) => {
-            if (error) {
-              console.error(error);
-              return;
-            }
+    const btnLogin = document.querySelector(".menu-item_login");
+    const btnLogOut = document.querySelector(".menu-item_logout");
+    const btnReg = document.querySelector(".menu-item_register");
 
-            if (response.success) {
-              App.setState("init");
-            }
-          });
+    console.log(btnLogOut, btnLogin, btnReg);
+
+    btnLogin.addEventListener("click", () => {
+      App.getModal("login").open();
+    });
+
+    btnLogOut.addEventListener("click", () => {
+      User.logout((error, response) => {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        if (response.success) {
+          App.setState("init");
         }
       });
-    }
+    });
+
+    btnReg.addEventListener("click", () => {
+      App.getModal("register").open();
+    });
   }
 }

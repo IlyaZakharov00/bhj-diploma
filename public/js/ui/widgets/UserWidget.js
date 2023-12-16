@@ -13,8 +13,9 @@ class UserWidget {
    * */
   constructor(element) {
     if (!element) {
-      return;
-    } else this.element = element;
+      throw new Error("Error: element not found");
+    }
+    this.element = element;
   }
 
   /**

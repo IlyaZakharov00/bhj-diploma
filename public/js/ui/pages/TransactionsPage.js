@@ -31,7 +31,20 @@ class TransactionsPage {
    * методами TransactionsPage.removeTransaction и
    * TransactionsPage.removeAccount соответственно
    * */
-  registerEvents() {}
+  registerEvents() {
+    const accDeleteBtn = document.querySelector(".remove-account");
+    accDeleteBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.removeAccount();
+    });
+
+    this.element.addEventListener("click", (e) => {
+      e.preventDefault();
+      let currentTransaction = e.target.closest(".transaction__remove");
+      if (currentTransaction)
+        this.removeTransaction(currentTransaction.dataset.id);
+    });
+  }
 
   /**
    * Удаляет счёт. Необходимо показать диаголовое окно (с помощью confirm())
@@ -42,7 +55,21 @@ class TransactionsPage {
    * либо обновляйте только виджет со счетами и формы создания дохода и расхода
    * для обновления приложения
    * */
-  removeAccount() {}
+  removeAccount() {
+    if (!this.lastOptions) return;
+    if (confirm("Вы действительно хотите удалить счёт?")) {
+      Account.remove({ id: this.lastOptions.account_id }, (err, response) => {
+        console.log(response);
+        if (response && response.success) {
+          App.updateWidgets();
+          App.updateForms();
+          this.clear();
+        } else {
+          console.log("Ошибка удаления счета", response.error);
+        }
+      });
+    }
+  }
 
   /**
    * Удаляет транзакцию (доход или расход). Требует
@@ -50,7 +77,17 @@ class TransactionsPage {
    * По удалению транзакции вызовите метод App.update(),
    * либо обновляйте текущую страницу (метод update) и виджет со счетами
    * */
-  removeTransaction(id) {}
+  removeTransaction(id) {
+    if (confirm("Вы действительно хотите удалить эту транзакцию?")) {
+      Transaction.remove({ id }, (err, response) => {
+        if (response && response.success) {
+          App.update();
+        } else {
+          console.log("Ошибка удаления транзакции", response.error);
+        }
+      });
+    }
+  }
 
   /**
    * С помощью Account.get() получает название счёта и отображает

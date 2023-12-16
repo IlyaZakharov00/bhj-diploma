@@ -11,32 +11,23 @@ const createRequest = (options) => {
 
   if (method === "GET") {
     url = url.concat("?", new URLSearchParams(options.data).toString());
-    try {
-      xhr.open(method, url);
-      xhr.send();
-    } catch (err) {
-      callback(err);
-    }
+    xhr.open(method, url);
   } else {
     for (const key in options.data) {
       formData.append(key, options.data[key]);
-    }
-    try {
       xhr.open(method, url);
-      xhr.send(formData);
-    } catch (err) {
-      callback(err);
     }
   }
+  try {
+    xhr.send(formData);
+  } catch (err) {
+    callback(err);
+  }
   xhr.onload = () => {
-    if (xhr.status === 200) {
-      callback(null, xhr.response);
-    } else {
-      callback("Ошибка: проблема с отправкой запроса", {});
-    }
+    callback(null, xhr.response);
   };
 
   xhr.onerror = () => {
-    callback(new Error("Ошибка: проблема с сетью"));
+    callback(new Error("Ошибка!"));
   };
 };
